@@ -7,13 +7,13 @@
 rawDataFileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 workingDataPath <- "./data"
 downloadedZipfilePath <- paste(workingDataPath, "downloaded_dataset.zip", sep = "/")
-rawDataPath <- paste(workingDataPath, "./UCI HAR Dataset", sep ="/")
+rawDataPath <- paste(workingDataPath, "UCI HAR Dataset", sep ="/")
 if(!file.exists(workingDataPath)) {
         dir.create(workingDataPath)
-}
+} else {print("SKIP: create working dir")}
 if(!file.exists(downloadedZipfilePath)) {
         download.file(rawDataFileUrl, destfile = downloadedZipfilePath, method = "curl")
-}
+} else {print("SKIP: download zip file")}
 if(!file.exists(rawDataPath)) {
-        unzip(zipfile = downloadedZipfiePath, exdir = wokingDataPath, list = TRUE)
-}
+        unzip(zipfile = downloadedZipfilePath, exdir = workingDataPath)
+} else {print("SKIP: extract zip file")}
