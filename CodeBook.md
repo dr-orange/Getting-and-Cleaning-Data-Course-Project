@@ -14,6 +14,8 @@ https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Datas
 
 ## Data Set Information:
 
+These signals were used to estimate variables of the feature vector for each pattern:  
+
 1. Time or Frequency  
     `Time` domain signals were captured at a constant rate of 50 Hz.  
     `Frequency` domain signals were appied a Fast Fourier Transform (FFT).
@@ -31,6 +33,8 @@ https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Datas
     3-axial signals in the `X`, `Y` and `Z` directions.
 
 ## Variables
+
+The complete list of variables of each feature vector:
 
 |Column #|Variable Name|
 |-|:--------|

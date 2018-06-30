@@ -100,4 +100,4 @@ meltedData <- melt(data, id = c("SubjectId", "Activity"))
 # Average of each variable
 tidyData <- dcast(meltedData, SubjectId + Activity ~ variable, mean)
 
-write.table(tidyData, "tidy_data.csv", sep = ",")
+write.table(tidyData, "tidy_data.csv", sep = ",", row.name=FALSE)
