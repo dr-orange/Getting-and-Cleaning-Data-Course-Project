@@ -65,24 +65,18 @@ descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
 ## 1. Merges the training and the test sets to create one data set.
 ## 4. Appropriately labels the data set with descriptive variable names.
 subjectData <- rbind(subjectTrain, subjectTest)
-signalData <- rbind(xTrain, xTest)
 activityData <- rbind(yTrain, yTest)
+signalData <- rbind(xTrain, xTest)
 
 names(subjectData) <- "SubjectId"
 names(activityData) <- "Activity"
 names(signalData) <- descriptiveFeatureNames
 
-data <- data.frame(subjectData, activityData, signalData, check.names = FALSE)
-
-# Free tempolary used large objects
-rm(subjectTrain, subjectTest, xTrain, xTest, yTrain, yTest, subjectData, signalData, activityData)
-
-extractName <- grep("SubjectId|Activity|Mean|StandardDeviation", names(data), value = TRUE)
-removeName <- grep("^angle", extractName, value = TRUE)
-tidyData <- data %>%
+tidyData <- data.frame(subjectData, activityData, signalData, check.names = FALSE) %>%
         ## 2. Extracts only the measurements on the mean and standard deviation for 
         ##    each measurement.
-        select(extractName, -removeName) %>%
+        select(matches("SubjectId|Activity|Mean|StandardDeviation", ignore.case = FALSE),
+               -matches("^angle", ignore.case = FALSE)) %>%
         ## 3. Uses descriptive activity names to name the activities in the data set
         mutate(Activity = factor(data$Activity, labels = descriptiveActivityNames)) %>%
         ## 5. From the data set in step 4, creates a second, independent tidy data set with the 
