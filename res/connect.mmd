@@ -1,0 +1,45 @@
+%% mermaid markdown
+graph LR
+    subgraph UCI HAR Dataset
+        subgraph train/
+            id1[subject_train.txt]
+            id2[X_train.txt]
+            id3[y_train.txt]
+        end
+        subgraph test/
+            id4[subject_test.txt]
+            id5[X_test.txt]
+            id6[y_test.txt]
+        end
+        id9[features.txt]
+        id10[activity_labels.txt]
+    end
+
+    subgraph Getting and Cleaning Data Course Project
+        subgraph run_analysis.R
+            id7["subjects<br>(train+test)"]
+            id11["signals<br>(train+test)"]
+            id12["activity labels<br>(train+test)"]
+            id13["tidy dataset"]
+            
+            id1-- "rbind()" -->id7
+            id4-- "rbind()" -->id7
+            id2-- "rbind()" -->id11
+            id5-- "rbind()" -->id11
+            id3-- "rbind()" -->id12
+            id6-- "rbind()" -->id12
+            id7-- "cbind()" -->id13
+            id11-- "cbind()<br>only the<br>measurements<br>on the<br>mean and<br>standard<br>deviation" -->id13
+            id12-- "cbind()" -->id13
+            id9-- "Uses column names" -->id11
+            id10-- "Uses descriptive<br>activity names" -->id12
+        end
+
+        subgraph Independent Tidy Dataset
+            id8[tidy_data.csv]
+
+            id13-- "average of<br>each variable<br>for each<br>activity and<br>each subject" -->id8
+        end
+    end
+
+    id8-.->id14(later analysis)
