@@ -66,6 +66,10 @@ descriptiveFeatureNames <- sapply(featureNames$V2, function(x){
         # add a counter value to be unique name
         x <- gsub("(-bandsEnergy\\(\\))", paste("\\1", hackCounter, sep = ""), x)
 })
+# Capitalize each words
+descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
+        paste(sapply(strsplit(tolower(x), "_"), capitalize), collapse = " ")
+})
 
 ## 1. Merges the training and the test sets to create one data set.
 subjectData <- rbind(subjectTrain, subjectTest)
@@ -81,12 +85,6 @@ data <- data.frame(subjectData, activityData, signalData, check.names = FALSE)
 
 # Free tempolary used large objects
 rm(subjectTrain, subjectTest, xTrain, xTest, yTrain, yTest, subjectData, signalData, activityData)
-
-
-# Capitalize each words
-descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
-        paste(sapply(strsplit(tolower(x), "_"), capitalize), collapse = " ")
-})
 
 ## 2. Extracts only the measurements on the mean and standard deviation for 
 ##    each measurement.
