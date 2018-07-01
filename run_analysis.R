@@ -63,11 +63,11 @@ descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
 })
 
 ## 1. Merges the training and the test sets to create one data set.
-## 4. Appropriately labels the data set with descriptive variable names.
 subjectData <- rbind(subjectTrain, subjectTest)
 activityData <- rbind(yTrain, yTest)
 signalData <- rbind(xTrain, xTest)
 
+## 4. Appropriately labels the data set with descriptive variable names.
 names(subjectData) <- "SubjectId"
 names(activityData) <- "Activity"
 names(signalData) <- descriptiveFeatureNames
