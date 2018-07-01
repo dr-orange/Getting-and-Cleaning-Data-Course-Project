@@ -8,9 +8,21 @@ A code book that describes the variables, the data, and any transformations or w
 
 https://github.com/dr-orange/Getting-and-Cleaning-Data-Course-Project/blob/master/tidy_data.csv
 
-## Source:
+## Source Data Set:
 
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+- `features.txt`: List of all features.
+- `activity_labels.txt`: Links the class labels with their activity name.
+- `train/X_train.txt`: Training set.
+- `train/y_train.txt`: Training labels.
+- `test/X_test.txt`: Test set.
+- `test/y_test.txt`: Test labels.
+- `train/subject_train.txt`: Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
+
+## Transformation and Work:
+
+![](res/connect.png "Data Connection")
 
 ## Data Set Information:
 
@@ -32,7 +44,7 @@ These signals were used to estimate variables of the feature vector for each pat
 7. X, Y or Z  
     3-axial signals in the `X`, `Y` and `Z` directions.
 
-## Variables
+## Variables:
 
 The complete list of variables of each feature vector:
 
