@@ -42,7 +42,12 @@ yTest <- tbl_df(read.table(file.path(testDataPath, "y_test.txt")))
 featureNames <- read.table(file.path(rawDataPath, "features.txt"), stringsAsFactors = TRUE)
 activityNames <- read.table(file.path(rawDataPath, "activity_labels.txt"))
 
-# Readable names
+## 1. Merges the training and the test sets to create one data set.
+subjectData <- rbind(subjectTrain, subjectTest)
+activityData <- rbind(yTrain, yTest)
+signalData <- rbind(xTrain, xTest)
+
+## 4. Appropriately labels the data set with descriptive variable names.
 hackCounter <- 0
 descriptiveFeatureNames <- sapply(featureNames$V2, function(x){
         hackCounter <<- hackCounter + 1
@@ -61,13 +66,7 @@ descriptiveFeatureNames <- sapply(featureNames$V2, function(x){
 descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
         paste(sapply(strsplit(tolower(x), "_"), capitalize), collapse = " ")
 })
-
-## 1. Merges the training and the test sets to create one data set.
-subjectData <- rbind(subjectTrain, subjectTest)
-activityData <- rbind(yTrain, yTest)
-signalData <- rbind(xTrain, xTest)
-
-## 4. Appropriately labels the data set with descriptive variable names.
+# Set
 names(subjectData) <- "SubjectId"
 names(activityData) <- "Activity"
 names(signalData) <- descriptiveFeatureNames
