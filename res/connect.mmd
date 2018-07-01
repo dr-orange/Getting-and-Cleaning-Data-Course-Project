@@ -28,17 +28,17 @@ graph LR
             id5-- "rbind()" -->id11
             id3-- "rbind()" -->id12
             id6-- "rbind()" -->id12
-            id7-- "cbind()" -->id13
-            id11-- "cbind()<br>only the<br>measurements<br>on the<br>mean and<br>standard<br>deviation" -->id13
-            id12-- "cbind()" -->id13
-            id9-- "Uses column names" -->id11
-            id10-- "Uses descriptive<br>activity names" -->id12
+            id7-- "data.frame()" -->id13
+            id11-- "data.frame()<br>select()<br>only the<br>measurements<br>on the<br>mean and<br>standard<br>deviation" -->id13
+            id12-- "data.frame()" -->id13
+            id9-- "uses column names" -->id11
+            id10-- "uses descriptive<br>activity names" -->id12
         end
 
         subgraph Independent Tidy Dataset
             id8[tidy_data.csv]
 
-            id13-- "average of<br>each variable<br>for each<br>activity and<br>each subject" -->id8
+            id13-- "group_by()<br>summarize_all()<br>average of<br>each variable<br>for each<br>activity and<br>each subject" -->id8
         end
     end
 

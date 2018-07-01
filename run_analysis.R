@@ -7,7 +7,6 @@
 ##    average of each variable for each activity and each subject.
 
 library(dplyr)
-library(tidyr)
 library(Hmisc) # capitalize()
 
 # Download Data
@@ -18,23 +17,14 @@ rawDataPath <- file.path(workingDataPath, "UCI HAR Dataset")
 # Create working directory
 if(!file.exists(workingDataPath)) {
         dir.create(workingDataPath)
-} else {
-        # Already exists
-        message("SKIP: create working dir")
 }
 # Download ziped file
 if(!file.exists(downloadedZipfilePath)) {
         download.file(rawDataFileUrl, destfile = downloadedZipfilePath, method = "curl")
-} else {
-        # Already exists
-        message("SKIP: download zip file")
 }
 # Unzip
 if(!file.exists(rawDataPath)) {
         unzip(zipfile = downloadedZipfilePath, exdir = workingDataPath)
-} else {
-        # Already exists
-        message("SKIP: extract zip file")
 }
 
 # Read Data
@@ -52,6 +42,7 @@ yTest <- tbl_df(read.table(file.path(testDataPath, "y_test.txt")))
 featureNames <- read.table(file.path(rawDataPath, "features.txt"), stringsAsFactors = TRUE)
 activityNames <- read.table(file.path(rawDataPath, "activity_labels.txt"))
 
+# Readable names
 hackCounter <- 0
 descriptiveFeatureNames <- sapply(featureNames$V2, function(x){
         hackCounter <<- hackCounter + 1
@@ -72,11 +63,11 @@ descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
 })
 
 ## 1. Merges the training and the test sets to create one data set.
+## 4. Appropriately labels the data set with descriptive variable names.
 subjectData <- rbind(subjectTrain, subjectTest)
 signalData <- rbind(xTrain, xTest)
 activityData <- rbind(yTrain, yTest)
 
-## 4. Appropriately labels the data set with descriptive variable names.
 names(subjectData) <- "SubjectId"
 names(activityData) <- "Activity"
 names(signalData) <- descriptiveFeatureNames
@@ -86,21 +77,16 @@ data <- data.frame(subjectData, activityData, signalData, check.names = FALSE)
 # Free tempolary used large objects
 rm(subjectTrain, subjectTest, xTrain, xTest, yTrain, yTest, subjectData, signalData, activityData)
 
-## 2. Extracts only the measurements on the mean and standard deviation for 
-##    each measurement.
 extractName <- grep("SubjectId|Activity|Mean|StandardDeviation", names(data), value = TRUE)
 removeName <- grep("^angle", extractName, value = TRUE)
-data <- data %>%
-        select(extractName, -removeName)
-
-## 3. Uses descriptive activity names to name the activities in the data set
-# Uses descriptive activity names
-data <- data %>%
-        mutate(Activity = factor(data$Activity, labels = descriptiveActivityNames))
-
-## 5. From the data set in step 4, creates a second, independent tidy data set with the 
-##    average of each variable for each activity and each subject.
 tidyData <- data %>%
+        ## 2. Extracts only the measurements on the mean and standard deviation for 
+        ##    each measurement.
+        select(extractName, -removeName) %>%
+        ## 3. Uses descriptive activity names to name the activities in the data set
+        mutate(Activity = factor(data$Activity, labels = descriptiveActivityNames)) %>%
+        ## 5. From the data set in step 4, creates a second, independent tidy data set with the 
+        ##    average of each variable for each activity and each subject.
         group_by(SubjectId, Activity) %>%
         summarise_all(mean)
 
