@@ -49,55 +49,62 @@ subjectTest <- tbl_df(read.table(file.path(testDataPath, "subject_test.txt")))
 xTest <- tbl_df(read.table(file.path(testDataPath, "X_test.txt")))
 yTest <- tbl_df(read.table(file.path(testDataPath, "y_test.txt")))
 
-featureNames <- read.table(file.path(rawDataPath, "features.txt"))
+featureNames <- read.table(file.path(rawDataPath, "features.txt"), stringsAsFactors = TRUE)
 activityNames <- read.table(file.path(rawDataPath, "activity_labels.txt"))
 
-# Readable Name
-names(subjectTrain) <- "SubjectId"
-names(subjectTest) <- "SubjectId"
-names(xTrain) <- featureNames$V2
-names(yTrain) <- "Activity"
-names(xTest) <- featureNames$V2
-names(yTest) <- "Activity"
+hackCounter <- 0
+descriptiveFeatureNames <- sapply(featureNames$V2, function(x){
+        hackCounter <<- hackCounter + 1
+        x <- gsub("-([XYZ])$", "\\1", x)
+        x <- gsub("^t", "Time", x)
+        x <- gsub("^f", "Frequency", x)
+        x <- gsub("Acc", "Acceleration", x)
+        x <- gsub("Gyro", "Gyroscope", x)
+        x <- gsub("Mag", "Magnitude", x)
+        x <- gsub("-mean\\(\\)", "Mean", x)
+        x <- gsub("-std\\(\\)", "StandardDeviation", x)
+        # add a counter value to be unique name
+        x <- gsub("(-bandsEnergy\\(\\))", paste("\\1", hackCounter, sep = ""), x)
+})
 
 ## 1. Merges the training and the test sets to create one data set.
 subjectData <- rbind(subjectTrain, subjectTest)
-xData <- rbind(xTrain, xTest)
-yData <- rbind(yTrain, yTest)
+signalData <- rbind(xTrain, xTest)
+activityData <- rbind(yTrain, yTest)
 
-data <- cbind(subjectData, yData, xData)
+## 4. Appropriately labels the data set with descriptive variable names.
+names(subjectData) <- "SubjectId"
+names(activityData) <- "Activity"
+names(signalData) <- descriptiveFeatureNames
 
-# Free templary used objects
-rm(featureNames, subjectTrain, subjectTest, xTrain, xTest, yTrain, yTest, subjectData, xData, yData)
+data <- data.frame(subjectData, activityData, signalData, check.names = FALSE)
+
+# Free tempolary used large objects
+rm(subjectTrain, subjectTest, xTrain, xTest, yTrain, yTest, subjectData, signalData, activityData)
+
+
+# Capitalize each words
+descriptiveActivityNames <- sapply(activityNames$V2, function(x) {
+        paste(sapply(strsplit(tolower(x), "_"), capitalize), collapse = " ")
+})
 
 ## 2. Extracts only the measurements on the mean and standard deviation for 
 ##    each measurement.
-data <- data[, grepl("SubjectId|Activity|mean\\(\\)|std\\(\\)", names(data))]
+extractName <- grep("SubjectId|Activity|Mean|StandardDeviation", names(data), value = TRUE)
+removeName <- grep("^angle", extractName, value = TRUE)
+data <- data %>%
+        select(extractName, -removeName)
 
 ## 3. Uses descriptive activity names to name the activities in the data set
-# Capitalize each words
-activityNames$V2 <- sapply(activityNames$V2, function(x) {
-        paste(sapply(strsplit(tolower(x), "_"), capitalize), collapse=" ")
-})
 # Uses descriptive activity names
-data$Activity <- factor(data$Activity, labels = activityNames$V2)
-
-## 4. Appropriately labels the data set with descriptive variable names.
-names(data) <- sapply(names(data), function(x){
-        x <- gsub("-([XYZ])$", "\\1", x);
-        x <- gsub("^t", "Time", x);
-        x <- gsub("^f", "Frequency", x);
-        x <- gsub("Acc", "Acceleration", x);
-        x <- gsub("Gyro", "Gyroscope", x);
-        x <- gsub("Mag", "Magnitude", x);
-        x <- gsub("-mean\\(\\)", "Mean", x);
-        x <- gsub("-std\\(\\)", "StandardDeviation", x)
-})
+data <- data %>%
+        mutate(Activity = factor(data$Activity, labels = descriptiveActivityNames))
 
 ## 5. From the data set in step 4, creates a second, independent tidy data set with the 
 ##    average of each variable for each activity and each subject.
-meltedData <- melt(data, id = c("SubjectId", "Activity"))
-# Average of each variable
-tidyData <- dcast(meltedData, SubjectId + Activity ~ variable, mean)
+tidyData <- data %>%
+        group_by(SubjectId, Activity) %>%
+        summarise_all(mean)
 
-write.table(tidyData, "tidy_data.csv", sep = ",", row.name=FALSE)
+# write file
+write.table(tidyData, "tidy_data.csv", sep = ",", row.name = FALSE)
