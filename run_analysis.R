@@ -78,7 +78,7 @@ tidyData <- data.frame(subjectData, activityData, signalData, check.names = FALS
         select(matches("SubjectId|Activity|Mean|StandardDeviation", ignore.case = FALSE),
                -matches("^angle", ignore.case = FALSE)) %>%
         ## 3. Uses descriptive activity names to name the activities in the data set
-        mutate(Activity = factor(data$Activity, labels = descriptiveActivityNames)) %>%
+        mutate(Activity = factor(Activity, labels = descriptiveActivityNames)) %>%
         ## 5. From the data set in step 4, creates a second, independent tidy data set with the 
         ##    average of each variable for each activity and each subject.
         group_by(SubjectId, Activity) %>%
