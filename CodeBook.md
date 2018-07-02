@@ -6,7 +6,7 @@ A code book that describes the variables, the data, and any transformations or w
 
 ## Download Data Set:
 
-https://github.com/dr-orange/Getting-and-Cleaning-Data-Course-Project/blob/master/tidy_data.csv
+https://github.com/dr-orange/Getting-and-Cleaning-Data-Course-Project/blob/master/tidy_data.txt
 
 ## Source Data Set:
 

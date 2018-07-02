@@ -86,4 +86,4 @@ tidyData <- data.frame(subjectData, activityData, signalData, check.names = FALS
         summarise_all(mean)
 
 # write file
-write.table(tidyData, "tidy_data.csv", sep = ",", row.name = FALSE)
+write.table(tidyData, "tidy_data.txt", row.name = FALSE)
